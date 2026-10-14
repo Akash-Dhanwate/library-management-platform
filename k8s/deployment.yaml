@@ -21,8 +21,11 @@ spec:
     spec:
       containers:
       - name: library-app
-        image: library-management-platform:v1.0.0
+        image: library-management-platform:v1.0.1
         imagePullPolicy: IfNotPresent
+        envFrom:
+        - secretRef:
+            name: library-db-secret
         ports:
         - containerPort: 5000
         resources:

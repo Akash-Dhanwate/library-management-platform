@@ -3,13 +3,15 @@ from app.services.library_service import LibraryService
 
 api_bp = Blueprint("api", __name__)
 
+
 @api_bp.route("/health", methods=["GET"])
 def healthcheck():
     return jsonify({
         "status": "UP",
         "service": "Enterprise Smart Library Management Platform",
-        "version": "1.0.0"
+        "version": "1.0.1"
     }), 200
+
 
 @api_bp.route("/users", methods=["POST"])
 def register_user():
@@ -21,9 +23,13 @@ def register_user():
             email=data.get("email"),
             role=data.get("role", "Student")
         )
-        return jsonify({"message": "User registered successfully", "user": user}), 201
+        return jsonify({
+            "message": "User registered successfully",
+            "user": user,
+        }), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
 
 @api_bp.route("/users/<user_id>", methods=["GET"])
 def get_user(user_id):
@@ -32,11 +38,13 @@ def get_user(user_id):
         return jsonify({"error": "User not found"}), 404
     return jsonify(user), 200
 
+
 @api_bp.route("/books", methods=["GET"])
 def list_books():
     q = request.args.get("q", "")
     books = LibraryService.search_books(q)
     return jsonify({"count": len(books), "books": books}), 200
+
 
 @api_bp.route("/books", methods=["POST"])
 def add_book():
@@ -49,9 +57,13 @@ def add_book():
             isbn=data.get("isbn"),
             total_copies=int(data.get("total_copies", 1))
         )
-        return jsonify({"message": "Book added successfully", "book": book}), 201
+        return jsonify({
+            "message": "Book added successfully",
+            "book": book,
+        }), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
 
 @api_bp.route("/borrow", methods=["POST"])
 def borrow_book():
@@ -61,9 +73,13 @@ def borrow_book():
             user_id=data.get("user_id"),
             book_id=data.get("book_id")
         )
-        return jsonify({"message": "Book checked out successfully", "loan": loan}), 200
+        return jsonify({
+            "message": "Book checked out successfully",
+            "loan": loan,
+        }), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+
 
 @api_bp.route("/return", methods=["POST"])
 def return_book():
@@ -73,6 +89,9 @@ def return_book():
             user_id=data.get("user_id"),
             book_id=data.get("book_id")
         )
-        return jsonify({"message": "Book returned successfully", "loan": loan}), 200
+        return jsonify({
+            "message": "Book returned successfully",
+            "loan": loan,
+        }), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
